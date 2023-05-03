@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { MainContainer, SubmitButton, Form, List, DeleteButton } from "./style";
 import { FaBars, FaGithub, FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 import api from "../../services/api";
+import { Link } from "react-router-dom";
+import { Loading } from "../Repository/styles";
 
 const Main = () => {
   const [newRepo, setNewRepo] = useState("");
@@ -59,6 +61,14 @@ const Main = () => {
     [repositorios]
   );
 
+  if (loading) {
+    return (
+      <Loading>
+        <h1>Loading....</h1>
+      </Loading>
+    );
+  }
+
   return (
     <MainContainer>
       <h1>
@@ -93,9 +103,9 @@ const Main = () => {
               </DeleteButton>
               {repo.name}
             </span>
-            <a href="">
+            <Link to={`/repositorio/${encodeURIComponent(repo.name)}`}>
               <FaBars size={20} />
-            </a>
+            </Link>
           </li>
         ))}
       </List>

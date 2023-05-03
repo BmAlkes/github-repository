@@ -7,8 +7,12 @@ const App = () => {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/repository/:repository" element={<Repository />} />
+          <Route exect path="/" element={<Main />} />
+          <Route
+            exact
+            path="/repositorio/:repositorio"
+            element={<Repository />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

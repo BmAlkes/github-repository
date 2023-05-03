@@ -109,6 +109,7 @@ export const PageActions = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: 20px;
 
   button {
     outline: 0;
@@ -117,5 +118,27 @@ export const PageActions = styled.div`
     color: #fff;
     padding: 5px 10px;
     border-radius: 4px;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+`;
+
+export const FilterList = styled.div`
+  margin: 15px 0;
+
+  button {
+    outline: 0;
+    border: 0;
+    padding: 8px;
+    border-radius: 4px;
+    margin: 0 13px;
+    font-size: 1.2rem;
+    &:nth-child(${(props) => props.active + 1}) {
+      background-color: #0071db;
+      color: #fff;
+    }
   }
 `;

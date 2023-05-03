@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import {
   BackButton,
   Container,
+  FilterList,
   IssuesList,
   Owner,
   PageActions,
@@ -16,6 +17,24 @@ const Repository = () => {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [newState, setNewState] = useState([
+    {
+      state: "all",
+      label: "all",
+      active: true,
+    },
+    {
+      state: "open",
+      label: "open",
+      active: false,
+    },
+    {
+      state: "closed",
+      label: "closed",
+      active: false,
+    },
+  ]);
+  const [filterIndex, setFilterIndex] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -26,7 +45,7 @@ const Repository = () => {
         api.get(`/repos/${nomeRepo}`),
         api.get(`/repos/${nomeRepo}/issues`, {
           params: {
-            state: "open",
+            state: newState[filterIndex].state,
             per_page: 5,
           },
         }),
@@ -36,7 +55,7 @@ const Repository = () => {
       setLoading(false);
     }
     load();
-  }, [params.repositorio]);
+  }, [params.repositorio, page, filterIndex, newState]);
 
   useEffect(() => {
     async function loadIssues() {
@@ -57,6 +76,10 @@ const Repository = () => {
     setPage(action === "back" ? page - 1 : page + 1);
   };
 
+  const handleIndex = (index) => {
+    setFilterIndex(index);
+  };
+
   return (
     <Container>
       <BackButton to="/">
@@ -67,6 +90,20 @@ const Repository = () => {
         <h1>{detailRepo.name}</h1>
         <p>{detailRepo.description}</p>
       </Owner>
+      <FilterList active={filterIndex}>
+        {newState.map((state, index) => {
+          return (
+            <button
+              key={state.index}
+              onClick={() => {
+                handleIndex(index);
+              }}
+            >
+              {state.label}
+            </button>
+          );
+        })}
+      </FilterList>
 
       <IssuesList>
         {issues.map((issue) => (
@@ -90,6 +127,7 @@ const Repository = () => {
           onClick={() => {
             handlePage("back");
           }}
+          disabled={page < 2}
         >
           Back
         </button>

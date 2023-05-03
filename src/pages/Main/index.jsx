@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MainContainer, SubmitButton, Form, List, DeleteButton } from "./style";
 import { FaBars, FaGithub, FaPlus, FaSpinner, FaTrash } from "react-icons/fa";
 import api from "../../services/api";
@@ -8,6 +8,16 @@ const Main = () => {
   const [repositorios, setRepositorios] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const repoStorage = localStorage.getItem("repos");
+    if (repoStorage) {
+      setRepositorios(JSON.parse(repoStorage));
+    }
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("repos", JSON.stringify(repositorios));
+  }, [repositorios]);
+
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
@@ -15,7 +25,16 @@ const Main = () => {
       async function submit() {
         setLoading(true);
         try {
+          if (newRepo === "") {
+            throw new Error("You need to indicate a repository");
+          }
           const response = await api.get(`repos/${newRepo}`);
+
+          const hasRepo = repositorios.find((repo) => repo.name === newRepo);
+
+          if (hasRepo) {
+            throw new Error("Repositorio duplicado");
+          }
           const data = {
             name: response.data.full_name,
           };
